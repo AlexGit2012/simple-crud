@@ -4,8 +4,8 @@ const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
 
 module.exports = {
   mode: process.env.NODE_ENV || "development",
-  entry: "./src/index.ts",
   target: "node",
+  entry: "./src/index.ts",
   resolve: {
     extensions: [".ts", ".js"],
   },
