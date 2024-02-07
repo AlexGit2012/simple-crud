@@ -24,6 +24,23 @@ const requestListener = (req, res) => {
 
   switch (method) {
     case "GET":
+      if (url.includes("api/users/")) {
+        const userId = url.replace("/api/users/", "");
+        if (userId) {
+          const user = users.find((userInDB) => {
+            return userInDB.id.toString() === userId;
+          });
+          if (user) {
+            responseResolver(200, JSON.stringify(user));
+          } else {
+            responseResolver(404, "User doesn't exist");
+          }
+        } else {
+          responseResolver(400, "Parameter userId is missed");
+        }
+      } else {
+        responseResolver(200, JSON.stringify(users));
+      }
       break;
 
     case "POST":
