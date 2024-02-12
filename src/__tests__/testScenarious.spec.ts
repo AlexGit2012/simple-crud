@@ -1,5 +1,5 @@
-import { server as myServer } from "../../index.js";
-import request = require("supertest");
+import { server as myServer } from "../../index";
+import request from "supertest";
 
 describe("Scenario 1: check /api/users get and post methods", () => {
   afterAll(() => {

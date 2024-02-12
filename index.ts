@@ -5,10 +5,10 @@ import * as uuid from "uuid";
 import "dotenv/config";
 import cluster from "cluster";
 import { cpus } from "os";
-import { addUser, findUser, getUsers, isUser, setUsers } from "./src/db.js";
+import { addUser, findUser, getUsers, isUser, setUsers } from "./src/db";
 
-const mode = process.env.NODE_MODE;
-const port = process.env.PORT;
+const mode = process.env.NODE_ENV;
+const port = process.env.PORT || 5001;
 
 export const server = http.createServer((req: any, res: any) => {
   try {
@@ -144,7 +144,7 @@ if (mode === "multi" && cluster.isPrimary) {
     console.log(`Worker ${worker.id} is down!`);
   });
 } else {
-  const { worker: { id: workerID = 0 } = {} } = cluster;
+  const { worker: { id: workerID = 0 } = {} } = cluster || {};
 
   const serverPort = Number(port) + workerID;
   server.listen(serverPort, () => {

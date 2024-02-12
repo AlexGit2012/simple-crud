@@ -1,6 +1,6 @@
 import * as uuid from "uuid";
-import { User } from "./types/types.js";
-import { wrongUUIDInstanceHandler, wrongUserIDErrorHandler } from "../index.js";
+import { User } from "./types/types";
+import { wrongUUIDInstanceHandler, wrongUserIDErrorHandler } from "../index";
 
 let users = [];
 
