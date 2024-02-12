@@ -61,8 +61,8 @@ describe("Scenario 2: create/update/delete user flow", () => {
       .send({ username: "Alexey", age: 25, hobbies: [] });
     const id = JSON.parse(responsePost.text).id;
     const responsePut = await request(myServer)
-      .put("/api/users/")
-      .send({ id: id, username: "Anton", age: 30, hobbies: ["Dancing"] });
+      .put(`/api/users/${id}`)
+      .send({ username: "Anton", age: 30, hobbies: ["Dancing"] });
     const result = JSON.parse(responsePut.text);
     expect(result).toEqual({
       id: id,
@@ -123,9 +123,7 @@ describe("Scenario 3: test standard scenario in task description", () => {
     delete result.id;
     expect(result).toEqual({ age: 25, hobbies: [], username: "Alexey" });
 
-    const responseGetUser = await request(myServer)
-      .get("/api/users/")
-      .query({ id: userID });
+    const responseGetUser = await request(myServer).get(`/api/users/${userID}`);
     expect(JSON.parse(responseGetUser.text)).toEqual({
       id: userID,
       age: 25,
@@ -134,8 +132,8 @@ describe("Scenario 3: test standard scenario in task description", () => {
     });
 
     const responsePut = await request(myServer)
-      .put("/api/users/")
-      .send({ id: userID, username: "Anton", age: 30, hobbies: ["Dancing"] });
+      .put(`/api/users/${userID}`)
+      .send({ username: "Anton", age: 30, hobbies: ["Dancing"] });
     const resultAfterPut = JSON.parse(responsePut.text);
     expect(resultAfterPut).toEqual({
       id: userID,
@@ -149,9 +147,9 @@ describe("Scenario 3: test standard scenario in task description", () => {
       .query({ id: userID });
     expect(responseDelete.statusCode).toEqual(204);
 
-    const responseGetDeletedUser = await request(myServer)
-      .get("/api/users/")
-      .query({ id: userID });
+    const responseGetDeletedUser = await request(myServer).get(
+      `/api/users/${userID}`
+    );
     expect(JSON.parse(responseGetDeletedUser.text)).toEqual({
       message: "User with this ID doesn't exist",
     });

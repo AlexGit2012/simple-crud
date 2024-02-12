@@ -1,10 +1,14 @@
 import * as uuid from "uuid";
 import { User } from "./types/types";
-import { wrongUUIDInstanceHandler, wrongUserIDErrorHandler } from "../index";
+import { ServerResponse } from "http";
+import {
+  wrongUUIDInstanceHandler,
+  wrongUserIDErrorHandler,
+} from "./utils/responseErrorHandlers";
 
-let users = [];
+let users: User[] = [];
 
-export const getUsers = () => users;
+export const getUsers = (): User[] => users;
 
 export const setUsers = (usersArr: User[]) => {
   users = usersArr;
@@ -14,7 +18,7 @@ export const addUser = (user: User) => {
   users.push(user);
 };
 
-export const findUser = (userID: string, res: any) => {
+export const findUser = (userID: string, res: ServerResponse): User | null => {
   if (!uuid.validate(userID)) {
     wrongUUIDInstanceHandler(res);
   }
@@ -26,6 +30,14 @@ export const findUser = (userID: string, res: any) => {
   return currentUser;
 };
 
-export const isUser = (user: User) => {
-  return user.username && user.age && user.hobbies;
+export const isUser = (user: User): boolean => {
+  return Boolean(
+    user.username &&
+      typeof user.username === "string" &&
+      user.age &&
+      typeof user.age === "number" &&
+      user.hobbies &&
+      Array.isArray(user.hobbies) &&
+      user.hobbies.every((hobby) => typeof hobby === "string")
+  );
 };
