@@ -2,17 +2,39 @@
   "name": "simple-crud",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "index.ts",
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "testMatch": [
+      "**/__tests__/**/*.spec.ts"
+    ]
+  },
   "type": "module",
   "scripts": {
-    "start": "nodemon .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon dist/index.js",
+    "test": "cross-env jest",
+    "start:build": "cross-env NODE_MODE=production tsc -p tsconfig.json",
+    "start:dev": "cross-env NODE_MODE=development nodemon dist/index.js",
+    "start:multi": "cross-env NODE_MODE=multi nodemon index.ts"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/node": "^20.11.17",
     "cross-env": "^7.0.3",
     "dotenv": "^16.4.1",
-    "nodemon": "^3.0.3"
+    "nodemon": "^3.0.3",
+    "ts-jest": "^29.1.2",
+    "ts-node": "^10.9.2",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.12",
+    "@types/supertest": "^6.0.2",
+    "@types/uuid": "^9.0.8",
+    "supertest": "^6.3.4",
+    "tslib": "^2.6.2",
+    "typescript": "^5.3.3"
   }
 }
