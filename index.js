@@ -15,11 +15,16 @@ const users = [
 ];
 
 const requestListener = (req, res) => {
-  const { method, url } = req;
+  const { method, url, body } = req;
 
-  const responseResolver = (statusCode, data) => {
-    res.writeHead(statusCode);
-    res.end(data);
+  const responseResolver = (firstArg, data) => {
+    if (typeof firstArg === "number") {
+      res.writeHead(firstArg);
+      res.end(data);
+    } else {
+      res.writeHead(200);
+      res.end(firstArg);
+    }
   };
 
   switch (method) {
@@ -31,15 +36,17 @@ const requestListener = (req, res) => {
             return userInDB.id.toString() === userId;
           });
           if (user) {
-            responseResolver(200, JSON.stringify(user));
+            responseResolver(JSON.stringify(user));
           } else {
             responseResolver(404, "User doesn't exist");
           }
         } else {
           responseResolver(400, "Parameter userId is missed");
         }
+      } else if (url.includes("api/users")) {
+        responseResolver(JSON.stringify(users));
       } else {
-        responseResolver(200, JSON.stringify(users));
+        responseResolver("Welcome to the server!");
       }
       break;
 
@@ -53,8 +60,7 @@ const requestListener = (req, res) => {
       break;
 
     default: {
-      res.writeHead(200);
-      res.end("Welcome to the server!");
+      responseResolver("Welcome to the server!");
     }
   }
 };
