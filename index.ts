@@ -1,16 +1,23 @@
-import { IncomingMessage, ServerResponse, createServer } from "http";
+import {
+  IncomingMessage,
+  ServerResponse,
+  createServer,
+  request as httpRequest,
+} from "http";
 import { parse } from "url";
 import { User } from "./src/types/types.js";
 import "dotenv/config";
 import cluster from "cluster";
-import { cpus } from "os";
-import { getUsers, setUsers } from "./src/db";
+import { availableParallelism } from "os";
 import process from "node:process";
 import { responseCreator, successResolver } from "./src/utils/utils";
 import { router } from "./src/router";
+import { getUsers, setUsers } from "./src/db";
 
 const mode = process.env.NODE_ENV;
-const port = process.env.PORT || 5001;
+let port = process.env.PORT || 5001;
+const workers = [];
+let workerIndex = 0;
 
 export const server = createServer(
   (req: IncomingMessage, res: ServerResponse) => {
@@ -28,7 +35,43 @@ export const server = createServer(
         successResolver(res, payload, statusCode);
       };
 
-      router(pathname, method, req, res, userID, bindSuccessResolver);
+      if (mode === "multi" && cluster.isPrimary) {
+        const customReq = httpRequest(
+          {
+            hostname: "localhost",
+            port: Number(port) + workerIndex,
+            method,
+            path: pathname,
+            headers: {
+              "Content-Type": "application/json",
+            },
+          },
+          (workerResponse: IncomingMessage) => {
+            let workerBody = "";
+            workerResponse.on("data", (chunk: Buffer | string) => {
+              workerBody += chunk.toString();
+            });
+            workerResponse.on("end", () => {
+              res.setHeader("Content-Type", "application/json");
+              res.writeHead(workerResponse.statusCode);
+              res.end(workerBody);
+            });
+          }
+        );
+        workerIndex = (workerIndex + 1) % workers.length;
+        let body = "";
+        req.on("data", (chunk: Buffer | string) => {
+          body += chunk.toString();
+        });
+        req.on("end", () => {
+          customReq.end(body);
+        });
+      } else {
+        if (mode === "multi") {
+          console.log(`Worker on port:${port} active!`);
+        }
+        router(pathname, method, req, res, userID, bindSuccessResolver);
+      }
     } catch (error) {
       responseCreator(
         res,
@@ -42,7 +85,7 @@ export const server = createServer(
 // Load balancer
 
 if (mode === "multi" && cluster.isPrimary) {
-  cpus().forEach(() => {
+  for (let i = 0; i < availableParallelism() - 1; i++) {
     const workerObj = cluster.fork();
 
     workerObj.on("message", (data) => {
@@ -52,17 +95,23 @@ if (mode === "multi" && cluster.isPrimary) {
         worker.send({ users: getUsers() });
       }
     });
+
+    workers.push(workerObj);
+  }
+
+  server.listen(port, () => {
+    console.log(`Server(main) started on port ${port}`);
   });
 
   cluster.on("exit", (worker) => {
     console.log(`Worker ${worker.id} is down!`);
+    cluster.fork();
   });
 } else {
   const { worker: { id: workerID = 0 } = {} } = cluster || {};
-
-  const serverPort = Number(port) + workerID;
-  server.listen(serverPort, () => {
-    console.log(`Server started on port ${serverPort}`);
+  port = Number(port) + workerID;
+  server.listen(port, () => {
+    console.log(`Server started on port ${port}`);
     if (mode === "multi") {
       process.on("message", (data: { users: User[] }) => {
         const { users } = data;
