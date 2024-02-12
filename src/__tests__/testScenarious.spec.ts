@@ -1,4 +1,4 @@
-import { server as myServer } from "../../index.ts";
+import { server as myServer } from "../../index.js";
 import request = require("supertest");
 
 describe("Scenario 1: check /api/users get and post methods", () => {

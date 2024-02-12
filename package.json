@@ -14,7 +14,7 @@
   "scripts": {
     "start": "nodemon dist/index.js",
     "test": "cross-env jest",
-    "start:build": "cross-env NODE_MODE=production tsc -p tsconfig.json",
+    "start:build": "cross-env NODE_MODE=production tsc -p tsconfig.json && nodemon dist/index.js",
     "start:dev": "cross-env NODE_MODE=development nodemon dist/index.js",
     "start:multi": "cross-env NODE_MODE=multi nodemon index.ts"
   },

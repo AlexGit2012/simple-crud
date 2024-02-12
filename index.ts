@@ -1,6 +1,6 @@
 import * as http from "http";
 import { parse } from "url";
-import { User } from "./src/types/types.ts";
+import { User } from "./src/types/types.js";
 import * as uuid from "uuid";
 import "dotenv/config";
 import cluster from "cluster";
