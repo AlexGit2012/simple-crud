@@ -14,10 +14,10 @@
   "scripts": {
     "start": "nodemon dist/index.js",
     "test": "cross-env jest",
-    "build": "cross-env NODE_MODE=production tsc -p tsconfig.json",
-    "start:prod": "cross-env NODE_MODE=production tsc -p tsconfig.json && nodemon dist/index.js",
+    "build": "tsc -p tsconfig.json",
+    "start:prod": "tsc -p tsconfig.json && cross-env NODE_MODE=production nodemon dist/index.js",
     "start:dev": "cross-env NODE_MODE=development nodemon dist/index.js",
-    "start:multi": "cross-env NODE_MODE=multi nodemon dist/index.js"
+    "start:multi": "build && cross-env NODE_MODE=multi nodemon dist/index.js"
   },
   "author": "",
   "license": "ISC",
