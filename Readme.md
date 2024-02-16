@@ -2,14 +2,14 @@
 
 ### available endpoints:
 
-- http://localhost:5000/api/users - get and post requests (need body for post)
-- http://localhost:5000/api/users?id=userID - get/update(put)/delete user(need body for put and query for get and delete)
+- http://localhost:5000/api/users - Get and post requests (need body for post)
+- http://localhost:5000/api/users/{userID} - Endpoint for get/update(put)/delete user(need body for put request)
 
 ### Few examples:
 
-- http://localhost:5000/api/users (as post request body: { "username": "alex", "age": 23, "hobbies": []})
-- http://localhost:5000/api/users/?id=73e2397f-2b34-4485-8b52-94829c2b6841 (get user request example)
-- http://localhost:5000/api/users/ (Usually we use body for put, not query. Example - {"id": "3f183dc0-73e3-4a9c-bd00-85c7b7e83c6b", "username": "anton", "age": 25, "hobbies": ["DANCING"]})
+- http://localhost:5000/api/users (As post request body: { "username": "alex", "age": 23, "hobbies": ["Dancing"]})
+- http://localhost:5000/api/users/73e2397f-2b34-4485-8b52-94829c2b6841 (Get user request example)
+- http://localhost:5000/api/users/3f183dc0-73e3-4a9c-bd00-85c7b7e83c6b (We get id from url. User must exists. Body example - { "username": "alex", "age": 25, "hobbies": ["Dancing", "Boardgames"]})
 
 ### Scripts:
 
@@ -17,6 +17,6 @@
 - start:prod
 - start:multi
 
-PS: Don't forget to build project!
+PS: Don't forget to "npm i"!
 
 Thanks!
