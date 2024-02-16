@@ -17,7 +17,7 @@
     "build": "tsc -p tsconfig.json",
     "start:prod": "tsc -p tsconfig.json && cross-env NODE_MODE=production nodemon dist/index.js",
     "start:dev": "cross-env NODE_MODE=development nodemon dist/index.js",
-    "start:multi": "build && cross-env NODE_MODE=multi nodemon dist/index.js"
+    "start:multi": "npm run build && cross-env NODE_MODE=multi nodemon dist/index.js"
   },
   "author": "",
   "license": "ISC",
