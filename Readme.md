@@ -15,7 +15,7 @@
 
 - start:dev
 - start:prod
-- start:multi
+- start:multi - (it's possible to check current worker instance in console)
 
 PS: Don't forget to "npm i"!
 
